@@ -1,0 +1,110 @@
+.Modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: 3rem;
+}
+
+.Modal-body {
+  position: relative;
+  min-width: 400px;
+  background-color: #ecf0f1;
+  padding: 1rem;
+  padding-top: 3rem;
+  border-radius: 3px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.Modal-dismiss {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: black;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+    cursor: pointer;
+}
+
+.Modal-title {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.Modal-formControl {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+}
+
+.Modal-formLabel {
+    font-size: 1.25rem;
+}
+
+.Modal-formInput {
+    padding: 0.5rem;
+    font-size: 1.15rem;
+}
+
+.Modal-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+select.Modal-formInput {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0px;
+    background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='#444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+    background-position: 98% 50%;
+    background-repeat: no-repeat;
+}
+
+/* Loading */
+
+.Modal-loadingIndicator {
+    height: 3rem;
+    width: 75%;
+    animation: progress 1.2s ease-in-out infinite reverse;
+    box-shadow: 0 2px rgba(0, 0, 0, 0.25);
+    background-color: #fff;
+    background-image: linear-gradient(90deg, #fff, #eee, #fff);
+    background-size: 200px 100%;
+    background-repeat: no-repeat;
+}
+
+.Modal-titleLoadingIndicator {
+    height: 2.5rem;
+    filter: brightness(25%);
+}
+
+.Modal-labelLoadingIndicator {
+    height: 2rem;
+    width: 75%;
+    margin-bottom: 0.5rem;
+    filter: brightness(75%);
+}
+
+.Modal-inputLoadingIndicator {
+    width: 100%;
+}
+
+@keyframes progress {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}

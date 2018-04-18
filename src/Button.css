@@ -1,0 +1,26 @@
+.Button {
+    border: 0;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.Button-primary {
+    color: white;
+    background-color: #3498db;
+}
+
+.Button-warning {
+    padding: 0.5rem;
+    background-color: #e74c3c;
+    color: white;
+}
+
+.Button--md {
+    font-size: 1rem;
+}
+
+.Button--lg {
+    font-size: 1.5rem;
+}
