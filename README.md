@@ -6,6 +6,8 @@
 
 ## How to run
 
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?env[RAZZLE_USE_AUTH0]=false)
+
 ### Production
 ```
 $ yarn install --production

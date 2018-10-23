@@ -1,0 +1,16 @@
+{
+    "name": "Circle CI Build Health",
+    "description": "A dashboard for the status of your builds in CircleCI",
+    "repository": "https://github.com/aptotude/circle-ci-build-health",
+    "keywords": ["node", "express", "react", "graphql", "circleci"],
+    "env": {
+      "RAZZLE_USE_AUTH0": {
+        "description": "Whether or not to use Auth0 as an auth provider",
+        "value": "false"
+      },
+      "RAZZLE_CIRCLE_CI_TOKEN": {
+        "description": "The token used to access your circle ci accont. Generate one here - https://circleci.com/docs/2.0/managing-api-tokens/",
+        "value": ""
+      }
+    }
+  }
