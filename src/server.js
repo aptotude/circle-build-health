@@ -4,8 +4,8 @@ import { StaticRouter } from "react-router-dom";
 import express from "express";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import { ensureLoggedIn } from "connect-ensure-login";
-
+import maybeEnsureLoggedIn from "./maybeEnsureLoggedIn";
+import useAuth0 from "./useAuth0";
 import CircleCI from "circleci";
 
 import bodyParser from "body-parser";
@@ -15,7 +15,7 @@ import { ApolloProvider, renderToStringWithData } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { SchemaLink } from "apollo-link-schema";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import passport from "./serverAuth";
+import maybeLoadAuthMiddleware from './maybeLoadAuthMiddlware';
 
 const APTO_ORGANIZATION_NAME = "aptotude";
 
@@ -90,7 +90,6 @@ const resolvers = {
       }
 
       const names = root.all_commit_details.reduce((agg, commit) => {
-        console.log(commit);
         return agg.add(commit.author_login);
       }, new Set());
       return [...names];
@@ -127,46 +126,17 @@ server = server
     })
   );
 
-if (process.env.RAZZLE_USE_AUTH0 === "true") {
+(async function() {
+  server = await maybeLoadAuthMiddleware(server);
   server = server
-    .use(passport.initialize())
-    .use(passport.session())
-    .get(
-      "/callback",
-      passport.authenticate("auth0", {
-        failureRedirect: "/failure"
-      }),
-      function(req, res) {
-        res.redirect("/");
-      }
+    .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
+    .use(
+      "/graphql",
+      maybeEnsureLoggedIn(useAuth0()),
+      bodyParser.json(),
+      graphqlExpress({ schema })
     )
-    .get("/login", passport.authenticate("auth0", {}));
-}
-
-server = server
-  .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
-  .use(
-    "/graphql",
-    (req, res, next) => {
-      if (process.env.RAZZLE_USE_AUTH0 === "true") {
-        return ensureLoggedIn("/login")(req, res, next);
-      }
-
-      next();
-    },
-    bodyParser.json(),
-    graphqlExpress({ schema })
-  )
-  .get(
-    "/",
-    (req, res, next) => {
-      if (process.env.RAZZLE_USE_AUTH0 === "true") {
-        return ensureLoggedIn("/login")(req, res, next);
-      }
-
-      next();
-    },
-    async (req, res) => {
+    .get("/", maybeEnsureLoggedIn(useAuth0()), async (req, res) => {
       const context = {};
       const app = (
         <ApolloProvider client={client}>
@@ -183,41 +153,41 @@ server = server
       } else {
         res.status(200).send(
           `<!doctype html>
-    <html lang="">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <title>Apto CircleCI Build Health</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        ${
-          assets.client.css
-            ? `<link rel="stylesheet" href="${assets.client.css}">`
-            : ""
-        }
-        ${
-          process.env.NODE_ENV === "production"
-            ? `<script src="${assets.client.js}" defer></script>`
-            : `<script src="${assets.client.js}" defer crossorigin></script>`
-        }
-    </head>
-    <body>
-        <div id="root">${markup}</div>
-    </body>
-    <script>
-    window.__APOLLO_STATE__=${JSON.stringify(apolloState).replace(
-      /</g,
-      "\\u003c"
-    )}
-</script>
-</html>`
+      <html lang="">
+      <head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta charset="utf-8" />
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+          <title>Apto CircleCI Build Health</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          ${
+            assets.client.css
+              ? `<link rel="stylesheet" href="${assets.client.css}">`
+              : ""
+          }
+          ${
+            process.env.NODE_ENV === "production"
+              ? `<script src="${assets.client.js}" defer></script>`
+              : `<script src="${assets.client.js}" defer crossorigin></script>`
+          }
+      </head>
+      <body>
+          <div id="root">${markup}</div>
+      </body>
+      <script>
+      window.__APOLLO_STATE__=${JSON.stringify(apolloState).replace(
+        /</g,
+        "\\u003c"
+      )}
+  </script>
+  </html>`
         );
       }
-    }
-  );
+    });
 
-if (process.env.NODE_ENV === "development") {
-  server.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
-}
+  if (process.env.NODE_ENV === "development") {
+    server.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
+  }
+}());
 
 export default server;

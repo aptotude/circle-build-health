@@ -23,4 +23,18 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-export default passport;
+export default function addAuthMiddleware(server) {
+  return server
+      .use(passport.initialize())
+      .use(passport.session())
+      .get(
+        "/callback",
+        passport.authenticate("auth0", {
+          failureRedirect: "/failure"
+        }),
+        function(req, res) {
+          res.redirect("/");
+        }
+      )
+      .get("/login", passport.authenticate("auth0", {}));
+}
