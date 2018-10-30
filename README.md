@@ -23,7 +23,7 @@ $ yarn start
 
 ### Docker
 
-See <DOCKER.md>.
+See [DOCKER.md](DOCKER.md).
 
 ### Environment Variables
 
