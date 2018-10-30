@@ -16,6 +16,10 @@ yarn start:prod
 yarn start
 ```
 
+### Docker
+
+See <DOCKER.md>.
+
 ### Environment Variables
 
 This project uses [razzle](https://github.com/jaredpalmer/razzle), which means it uses its [awesome tooling around .env files](https://github.com/jaredpalmer/razzle#what-other-env-files-are-can-be-used). Here's [the latest documentation](https://github.com/jaredpalmer/razzle#environment-variables) on the environment variables supported via razzle.
