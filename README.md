@@ -8,12 +8,15 @@
 
 ### Production
 ```
-yarn start:prod
+$ yarn install --production
+$ yarn build
+$ yarn start:prod
 ```
 
 ### Development
 ```
-yarn start
+$ yarn install
+$ yarn start
 ```
 
 ### Environment Variables
